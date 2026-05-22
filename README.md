@@ -1,7 +1,7 @@
 # Airport Flight Information System
 ## A frontend dashboard for Heydar Aliyev International Airport (BAK) — built with HTML, CSS, and JavaScript.
  About This Project
-This is my coursework project for [Course Name]. The goal was to build an interactive airport information system that simulates real-world flight boards, search functionality, and passenger services.
+This is my coursework project for web programming course. The goal was to build an interactive airport information system that simulates real-world flight boards, search functionality, and passenger services.
 What it does:
 Displays live flight information (arrivals & departures)
 Lets users search and filter flights by city, date, or flight number
@@ -33,7 +33,7 @@ airport-flight-system/
 ├── index.html          # Main page with all sections
 ├── styles.css          # All styling and animations
 ├── app.js              # All JavaScript logic and data
-└──  README.md           # This file
+└──  README.md          # This file
 
 ## Features
 Flight Board
