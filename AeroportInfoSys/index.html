@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAK - Heydar Aliyev International Airport | Flight Information System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<base target="_blank">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="airplane-loader">
+                <i class="fas fa-plane"></i>
+            </div>
+            <div class="loading-text">Loading Airport System...</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>BAK</span>
+                </div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#flights" class="active">Flights</a></li>
+                    <li class="dropdown">
+                        <a href="#services">Services <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="#vip-services"><i class="fas fa-crown"></i> VIP Services</a>
+                            <a href="#cargo"><i class="fas fa-box"></i> Cargo</a>
+                            <a href="#passenger-support"><i class="fas fa-headset"></i> Passenger Support</a>
+                        </div>
+                    </li>
+                    <li><a href="#booking">Book Via</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#admin" id="admin-link" style="display:none;">Admin</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <div class="time-temp">
+                    <span id="current-time">--:--</span>
+                    <span class="separator">|</span>
+                    <span id="temperature"><i class="fas fa-sun"></i> 24°C</span>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn-outline" onclick="openModal('signin')">Sign In</button>
+                    <button class="btn-primary" onclick="openModal('signup')">Sign Up</button>
+                </div>
+                <div class="user-menu" id="user-menu" style="display:none;">
+                    <span id="user-name">User</span>
+                    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+                <button class="burger" id="burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <ul>
+            <li><a href="#flights">Flights</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#booking">Book Via</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#admin" id="mobile-admin-link" style="display:none;">Admin Panel</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=80" alt="Modern Airport Terminal">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Heydar Aliyev International Airport</h1>
+            <p class="hero-subtitle">Baku, Azerbaijan | Gateway to the World</p>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-tabs">
+                    <button class="tab-btn active" data-tab="arrival">Arrivals</button>
+                    <button class="tab-btn" data-tab="departure">Departures</button>
+                </div>
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <i class="fas fa-plane-arrival"></i>
+                        <input type="text" id="city-filter" placeholder="From / To City">
+                    </div>
+                    <div class="filter-group">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="date-filter">
+                    </div>
+                    <div class="filter-group">
+                        <i class="fas fa-hashtag"></i>
+                        <input type="text" id="flight-filter" placeholder="Flight Number">
+                    </div>
+                    <button class="search-btn" onclick="filterFlights()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flight Board -->
+    <section class="flight-board" id="flights">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-list-alt"></i> Live Flight Board</h2>
+                <div class="board-tabs">
+                    <button class="board-tab active" onclick="switchBoard('arrival')">Arrivals</button>
+                    <button class="board-tab" onclick="switchBoard('departure')">Departures</button>
+                </div>
+            </div>
+
+            <!-- Desktop Table -->
+            <div class="flight-table-container desktop-only">
+                <table class="flight-table" id="flight-table">
+                    <thead>
+                        <tr>
+                            <th>Flight</th>
+                            <th>Airline</th>
+                            <th>From/To</th>
+                            <th>Time</th>
+                            <th>Gate</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flight-tbody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="flight-cards mobile-only" id="flight-cards">
+                <!-- Dynamic content -->
+            </div>
+
+            <div class="no-results" id="no-results" style="display:none;">
+                <i class="fas fa-search"></i>
+                <p>No flights found matching your criteria.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Flights -->
+    <section class="popular-flights" id="popular">
+        <div class="container">
+            <h2><i class="fas fa-star"></i> Popular Destinations</h2>
+            <div class="destinations-grid" id="destinations-grid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2><i class="fas fa-concierge-bell"></i> Airport Services</h2>
+            <div class="services-grid">
+                <div class="service-card" id="vip-services">
+                    <div class="service-icon vip">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>VIP Services</h3>
+                    <p>Private jet booking, VIP transfers, exclusive lounge access, and personalized concierge services.</p>
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="VIP Lounge">
+                    <button class="service-btn" onclick="showServiceDetail('vip')">Learn More</button>
+                </div>
+                <div class="service-card" id="cargo">
+                    <div class="service-icon cargo">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>Cargo Transport</h3>
+                    <p>International cargo handling, freight forwarding, customs clearance, and logistics solutions.</p>
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80" alt="Cargo Loading">
+                    <button class="service-btn" onclick="showServiceDetail('cargo')">Learn More</button>
+                </div>
+                <div class="service-card" id="passenger-support">
+                    <div class="service-icon support">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Passenger Support</h3>
+                    <p>Baggage information, check-in assistance, lost & found, and special needs services.</p>
+                    <img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=600&q=80" alt="Airport Support">
+                    <button class="service-btn" onclick="showServiceDetail('support')">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section class="booking" id="booking">
+        <div class="container">
+            <h2><i class="fas fa-ticket-alt"></i> Book Your Flight</h2>
+            <div class="booking-content">
+                <div class="booking-info">
+                    <h3>Easy Booking Options</h3>
+                    <p>Book your next flight directly through our partners or contact us for assistance.</p>
+                    <div class="booking-options">
+                        <a href="#" class="booking-option" onclick="simulateBooking('whatsapp')">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="#" class="booking-option" onclick="simulateBooking('phone')">
+                            <i class="fas fa-phone"></i>
+                            <span>Call Center</span>
+                        </a>
+                        <a href="#" class="booking-option" onclick="simulateBooking('online')">
+                            <i class="fas fa-globe"></i>
+                            <span>Online</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="ticket-preview" id="ticket-preview">
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <span>BOARDING PASS</span>
+                            <strong>BAK</strong>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-row">
+                                <div>
+                                    <small>Passenger</small>
+                                    <strong>Sample User</strong>
+                                </div>
+                                <div>
+                                    <small>Flight</small>
+                                    <strong>--</strong>
+                                </div>
+                            </div>
+                            <div class="ticket-row">
+                                <div>
+                                    <small>From</small>
+                                    <strong>BAK</strong>
+                                </div>
+                                <div class="ticket-plane">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div>
+                                    <small>To</small>
+                                    <strong>--</strong>
+                                </div>
+                            </div>
+                            <div class="ticket-row">
+                                <div>
+                                    <small>Date</small>
+                                    <strong>--</strong>
+                                </div>
+                                <div>
+                                    <small>Gate</small>
+                                    <strong>--</strong>
+                                </div>
+                                <div>
+                                    <small>Seat</small>
+                                    <strong>--</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticket-barcode">
+                            <div class="barcode"></div>
+                            <span>Sample Ticket</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews" id="reviews">
+        <div class="container">
+            <h2><i class="fas fa-comments"></i> Passenger Reviews</h2>
+            <div class="reviews-grid" id="reviews-grid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section class="admin-panel" id="admin" style="display:none;">
+        <div class="container">
+            <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3>Flight Management</h3>
+                    <div class="admin-form">
+                        <input type="text" id="admin-flight-num" placeholder="Flight Number">
+                        <input type="text" id="admin-airline" placeholder="Airline">
+                        <input type="text" id="admin-city" placeholder="City">
+                        <input type="time" id="admin-time">
+                        <select id="admin-type">
+                            <option value="arrival">Arrival</option>
+                            <option value="departure">Departure</option>
+                        </select>
+                        <select id="admin-status">
+                            <option value="On Time">On Time</option>
+                            <option value="Delayed">Delayed</option>
+                            <option value="Boarding">Boarding</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <button onclick="addFlight()" class="btn-primary">Add Flight</button>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <h3>Passenger List</h3>
+                    <div class="passenger-list" id="passenger-list">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-flights">0</span>
+                            <span class="stat-label">Active Flights</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-passengers">0</span>
+                            <span class="stat-label">Passengers</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-delayed">0</span>
+                            <span class="stat-label">Delayed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-plane-departure"></i>
+                        <span>BAK</span>
+                    </div>
+                    <p>Heydar Aliyev International Airport<br>Baku, Azerbaijan</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#flights">Flights</a>
+                    <a href="#services">Services</a>
+                    <a href="#booking">Booking</a>
+                    <a href="#reviews">Reviews</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +994 12 497 27 27</p>
+                    <p><i class="fas fa-envelope"></i> info@bak.airport.az</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p> 2024 Heydar Aliyev International Airport. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modal-overlay">
+        <!-- Sign In Modal -->
+        <div class="modal" id="signin-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Sign In</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Sign In</button>
+                </form>
+                <p class="form-switch">Don't have an account? <a href="#" onclick="openModal('signup')">Sign Up</a></p>
+            </div>
+        </div>
+
+        <!-- Sign Up Modal -->
+        <div class="modal" id="signup-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Sign Up</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleSignUp(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Create Account</button>
+                </form>
+                <p class="form-switch">Already have an account? <a href="#" onclick="openModal('signin')">Sign In</a></p>
+            </div>
+        </div>
+
+        <!-- Flight Detail Modal -->
+        <div class="modal modal-large" id="flight-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Flight Details</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="flight-detail-content">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        <!-- Service Detail Modal -->
+        <div class="modal" id="service-modal">
+            <div class="modal-header">
+                <h3 id="service-modal-title">Service Details</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="service-detail-content">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        <!-- Notification Modal -->
+        <div class="modal modal-small" id="notification-modal">
+            <div class="modal-body text-center">
+                <i class="fas fa-bell notification-icon"></i>
+                <h4 id="notification-title">Notification</h4>
+                <p id="notification-message">Message</p>
+                <button class="btn-primary" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Chat -->
+    <div class="chat-widget" id="chat-widget">
+        <button class="chat-toggle" onclick="toggleChat()">
+            <i class="fas fa-comments"></i>
+            <span class="chat-badge" id="chat-badge">1</span>
+        </button>
+        <div class="chat-panel" id="chat-panel">
+            <div class="chat-header">
+                <h4><i class="fas fa-headset"></i> Airport Support</h4>
+                <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <p>Welcome to Heydar Aliyev International Airport! How can I assist you today?</p>
+                        <span class="message-time">Just now</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Type your message..." onkeypress="handleChatKey(event)">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-header">
+            <h4><i class="fas fa-bell"></i> Notifications</h4>
+            <button onclick="clearNotifications()"><i class="fas fa-trash"></i></button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
